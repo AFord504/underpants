@@ -387,7 +387,7 @@ _.pluck = function(arr, prop) {
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
 _.every = function(coll, func) {
-    // Runs 'coll' through 'func' and assigns output to true if every element returns true and false if one is false 
+    // Runs 'coll' through 'func' and assigns output to true if every element returns true, and false if one is false 
     var output = true;
     if (Array.isArray(coll)) {
         !func ? 
@@ -423,7 +423,22 @@ _.every = function(coll, func) {
 *   _.some([1,3,5], function(e){return e % 2 === 0}) -> false
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
+_.some = function(coll, func) {
+    // Runs 'coll' through 'func' and assigns output to true if one element returns true, and false if all are false 
+    var output = false;
+    if (Array.isArray(coll)) {
+        !func ? 
+        _.each(coll, (element, index, array) => element ? output = true : null) :
+        _.each(coll, (element, index, array) => func(element, index, array) ? output = true : null)
+    } else if (_.typeOf(coll) === 'object') {
+        !func ? 
+        _.each(coll, (element, index, array) => element ? output = true : null) :
+        _.each(coll, (element, index, array) => func(element, index, array) ? output = true : output = true)
+    }
 
+    // Returns boolean
+    return output;
+}
 
 /** _.reduce
 * Arguments:
@@ -443,7 +458,17 @@ _.every = function(coll, func) {
 * Examples:
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
+_.reduce = function(arr, func, seed) {
+    // Sets prevResult to 'seed', or 1 if 'seed' is undefined
+    var prevResult;
+    seed !== undefined ? prevResult = seed : prevResult = 1;
 
+    // Runs prevResult, the current element, and the current through 'func' 
+    _.each(arr, (element, index, array) => prevResult = func(prevResult, element, index));
+
+    // Returns the final result of 'func'
+    return prevResult;
+}
 
 /** _.extend
 * Arguments:
@@ -459,6 +484,17 @@ _.every = function(coll, func) {
 *   _.extend(data, {b:"two"}); -> data now equals {a:"one",b:"two"}
 *   _.extend(data, {a:"two"}); -> data now equals {a:"two"}
 */
+_.extend = function(obj1) {
+    // Iterates over all arguments and adds the properties to 'obj1'
+    for (var i = 1; i < arguments.length; i++) {
+        for (var [key, value] of Object.entries(arguments[i])) {
+            obj1[key] = value;
+        }
+    }
+
+    // Returns 'obj1'
+    return obj1;
+}
 
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
